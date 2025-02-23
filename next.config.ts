@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     staleTimes:{
       dynamic:30, // cache for 30 seconds
     }
-  }
+  },
+  serverExternalPackages: ["@node-rs/argon2"],
 };
 
 export default nextConfig;
