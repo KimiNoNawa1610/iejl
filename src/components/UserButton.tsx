@@ -106,6 +106,7 @@ export default function UserButton({ className }: UserButtonProps) {
           }}
         >
             <LogOutIcon className="mr-2 size-4 justify-center items-center"></LogOutIcon>
+            Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

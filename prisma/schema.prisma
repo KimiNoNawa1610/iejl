@@ -28,7 +28,10 @@ model User {
   type         String
   sessions     Session[] // a user can login to multiple devices hence, multiple sessions
   createdAt    DateTime  @default(now())
+  totalScore   Int       @default(0)
 
+  Topic Topic[]
+  Score Score[]
   @@map("users") // name of the table
 }
 
@@ -38,4 +41,52 @@ model Session {
   expiresAt DateTime
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("sessions") 
+}
+
+// libraries extend
+
+enum TopicType {
+  VIDEO
+  ARTICLE
+}
+
+model Topic {
+  id              String    @id
+  title           String
+  description     String?
+  type            TopicType
+  videoUrl        String?   // if type is VIDEO
+  articleUrl      String?   // if type is ARTICLE (or you could store article content)
+  contributedById String
+  contributedBy   User      @relation(fields: [contributedById], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // A topic may have an associated quiz.
+  quiz            Quiz?
+  @@map("topics") 
+}
+
+model Quiz {
+  id        String   @id
+  topicId   String @unique
+  topic     Topic    @relation(fields: [topicId], references: [id])
+  questions Json?
+  createdAt DateTime @default(now())
+
+  // When users take the quiz, their scores are recorded.
+  scores    Score[]
+  @@map("quizzes") 
+}
+
+model Score {
+  id      String   @id 
+  userId  String
+  quizId  String
+  user    User     @relation(fields: [userId], references: [id])
+  quiz    Quiz     @relation(fields: [quizId], references: [id])
+  // The value that the user earned (e.g. percentage or points).
+  value   Int
+  takenAt DateTime @default(now())
+  @@map("scores") 
 }
